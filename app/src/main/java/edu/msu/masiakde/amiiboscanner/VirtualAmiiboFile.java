@@ -1,5 +1,7 @@
 package edu.msu.masiakde.amiiboscanner;
 
+import static edu.msu.masiakde.amiiboscanner.Utils.bytesToHexString;
+
 import android.nfc.Tag;
 import android.nfc.tech.MifareUltralight;
 import android.util.Log;
@@ -30,7 +32,7 @@ public class VirtualAmiiboFile {
             byte[] out = mifare.readPages(i*PAGE_SIZE);
             System.arraycopy(out, 0, bin, i * BYTES_READ, BYTES_READ - PAGE_SIZE);
 
-            Log.i("tag-data", bytesToHexString(bin));
+            Log.i("tag-data", bytesToHexString(bin, true));
             int tesst = 0;
         }
         catch (IOException e) {
@@ -38,31 +40,28 @@ public class VirtualAmiiboFile {
         }
     }
 
-    private String bytesToHexString(byte[] bytes) {
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < bytes.length; ++i) {
-            if (i > 0) {
-                sb.append(" ");
-            }
-            int b = bytes[i] & 0xff;
-            if (b < 0x10)
-                sb.append('0');
-            sb.append(Integer.toHexString(b));
-        }
-        return sb.toString();
-    }
-
     public byte[] getCharID() {
         byte[] char_id = Arrays.copyOfRange(bin, 21*4, 21*4+8);
-        Log.w("Tag-char-id", bytesToHexString(char_id));
+        Log.w("Tag-char-id", bytesToHexString(char_id, true));
        return char_id;
+    }
+
+    public byte[] getHead() {
+        byte[] char_id = Arrays.copyOfRange(bin, 21*4, 21*4+4);
+        Log.w("Tag-head", bytesToHexString(char_id, true));
+        return char_id;
+    }
+    public byte[] getTail() {
+        byte[] char_id = Arrays.copyOfRange(bin, 21*4+4, 21*4+8);
+        Log.w("Tag-tail", bytesToHexString(char_id, true));
+        return char_id;
     }
 
     public byte[] getUUID() {
         byte[] uuid = new byte[7];
         System.arraycopy(bin, 0, uuid, 0 , 3);
         System.arraycopy(bin, 4, uuid, 3, 4);
-        Log.w("Tag-uuid", bytesToHexString(uuid));
+        Log.w("Tag-uuid", bytesToHexString(uuid, true));
         return uuid;
     }
 }

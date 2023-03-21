@@ -22,4 +22,8 @@ public final class AmiiboInfo {
     }
 
     public Amiibo[] amiibo;
+
+    public String getName() {
+        return amiibo[0].character;
+    }
 }

@@ -1,37 +1,30 @@
 package edu.msu.masiakde.amiiboscanner;
 
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
+import static edu.msu.masiakde.amiiboscanner.Utils.bytesToHexString;
 
-import android.app.PendingIntent;
-import android.nfc.NdefMessage;
 import android.nfc.NfcAdapter;
 import android.nfc.Tag;
-import android.app.Activity;
-import android.content.Intent;
-import android.net.Uri;
-import android.nfc.tech.MifareUltralight;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
+
+import retrofit2.Call;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainActivity extends AppCompatActivity {
 
     private VirtualAmiiboFile amiibo = null;
+
+    private AmiiboInfo amiiboInfo = null;
 
     public class callBackHandler implements NfcAdapter.ReaderCallback {
         @Override
@@ -39,6 +32,8 @@ public class MainActivity extends AppCompatActivity {
             amiibo = new VirtualAmiiboFile(tag);
             byte[] test = amiibo.getUUID();
             byte[] test1 = amiibo.getCharID();
+            getInfoFromAPI(bytesToHexString(amiibo.getHead(), false), bytesToHexString(amiibo.getTail(), false));
+            Log.w("tag-name", amiiboInfo.getName());
         };
     }
 
@@ -82,24 +77,23 @@ public class MainActivity extends AppCompatActivity {
         Thread thread = new Thread(new Runnable() {
 
             @Override
-            public void run() {
-                String query = "https://amiiboapi.com/api/amiibo/?name=peach";
-
+            public void run()  {
                 try {
-                    URL url = new URL(query);
+                    String query = "https://amiiboapi.com/api/amiibo/?name=peach";
 
-                    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                    int responseCode = conn.getResponseCode();
-                    if(responseCode == HttpURLConnection.HTTP_OK) {
-                        InputStream stream = conn.getInputStream();
-                        String result = streamToString(stream);
+                    Retrofit retrofit = new Retrofit.Builder()
+                            .baseUrl("https://amiiboapi.com/api/")
+                            .addConverterFactory(GsonConverterFactory.create())
+                            .build();
+
+                    AmiiboAPI amiiboAPI = retrofit.create(AmiiboAPI.class);
+                    Response<AmiiboInfo> response = amiiboAPI.getCharacter(char_head, char_tail).execute();
+                    if (response.isSuccessful()) {
+                        amiiboInfo = response.body();
                     }
                 }
-                catch (MalformedURLException  e) {
-                    Log.w("API-Error", e);
-                }
-                catch (IOException ew) {
-                    Log.w("API-Error-IO", ew);
+                catch (IOException e) {
+                    Log.w("Failed API Call", e);
                 }
             }
         });
@@ -125,6 +119,5 @@ public class MainActivity extends AppCompatActivity {
 
     public void onLoadClick(View view) {
         //onResume();
-        getInfoFromAPI("test", "ing");
     }
 }
