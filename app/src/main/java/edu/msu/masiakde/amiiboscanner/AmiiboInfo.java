@@ -26,4 +26,6 @@ public final class AmiiboInfo {
     public String getName() {
         return amiibo[0].character;
     }
+
+    public String getImageURL() { return amiibo[0].image; }
 }

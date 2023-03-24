@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">AmiiboScanner</string>
-    <string name="load_button">Load</string>
+    <string name="load_tag_button">Load Tag</string>
+    <string name="save_file_button">Save File</string>
+    <string name="load_file_button">Load File</string>
+    <string name="restore_tag_button">Restore Tag</string>
 </resources>

@@ -3,14 +3,18 @@ package edu.msu.masiakde.amiiboscanner;
 import static edu.msu.masiakde.amiiboscanner.Utils.bytesToHexString;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 
 import retrofit2.Response;
 import retrofit2.Retrofit;
@@ -24,6 +28,10 @@ public class ScannerView extends View {
     private VirtualAmiiboFile amiibo = null;
 
     private AmiiboInfo amiiboInfo = null;
+
+    private Bitmap amiiboBitmap = null;
+
+    private final static float SCALE_DOWN = (float)0.7;
 
     public ScannerView(Context context) {
         super(context);
@@ -41,7 +49,6 @@ public class ScannerView extends View {
     }
 
     private void init(AttributeSet attrs, int defStyle) {
-
     }
 
 
@@ -49,19 +56,54 @@ public class ScannerView extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
+        // If there is no image to draw, we do nothing
+        if(amiiboBitmap == null) {
+            return;
+        }
+
+        /*
+         * Determine the margins and scale to draw the image
+         * centered and scaled to maximum size on any display
+         */
+        // Get the canvas size
+        float wid = getWidth();
+        float hit = getHeight();
+
+        // What would be the scale to draw the where it fits both
+        // horizontally and vertically?
+        float scaleH = wid / amiiboBitmap.getWidth();
+        float scaleV = hit / amiiboBitmap.getHeight();
+
+        // Use the lesser of the two
+        float imageScale = Math.min(scaleH, scaleV) * SCALE_DOWN;
+
+        // What is the scaled image size?
+        float iWid = imageScale * amiiboBitmap.getWidth();
+        float iHit = imageScale * amiiboBitmap.getHeight();
+
+        // Determine the top and left margins to center
+        float marginLeft = (wid - iWid) / 2;
+        float marginTop = (hit - iHit) / 2;
+
+        /*
+         * Draw the image bitmap
+         */
+        canvas.save();
+        canvas.translate(marginLeft,  marginTop);
+        canvas.scale(imageScale, imageScale);
+        canvas.drawBitmap(amiiboBitmap, 0, 0, null);
+        canvas.restore();
     }
 
     public void setAmiibo(VirtualAmiiboFile amiiboFile) {
         amiibo = amiiboFile;
-        byte[] test = amiibo.getUUID();
-        byte[] test1 = amiibo.getCharID();
         getInfoFromAPI(bytesToHexString(amiibo.getHead(), false), bytesToHexString(amiibo.getTail(), false));
-        Log.w("tag-name", amiiboInfo.getName());
+        Log.w("tag-name", GetAmiiboName());
     }
 
     public String GetAmiiboName() {
         if (amiiboInfo == null) {
-            return null;
+            return "None";
         }
         else {
             return amiiboInfo.getName();
@@ -71,10 +113,11 @@ public class ScannerView extends View {
     public void getInfoFromAPI(String char_head, String char_tail) {
         Thread thread = new Thread(new Runnable() {
 
+            private String error_msg = null;
+
             @Override
             public void run()  {
                 try {
-                    String query = "https://amiiboapi.com/api/amiibo/?name=peach";
 
                     Retrofit retrofit = new Retrofit.Builder()
                             .baseUrl("https://amiiboapi.com/api/")
@@ -85,15 +128,23 @@ public class ScannerView extends View {
                     Response<AmiiboInfo> response = amiiboAPI.getCharacter(char_head, char_tail).execute();
                     if (response.isSuccessful()) {
                         amiiboInfo = response.body();
+                        if (amiiboInfo != null) {
+                            URL url = new URL(amiiboInfo.getImageURL());
+                            amiiboBitmap = BitmapFactory.decodeStream(url.openConnection().getInputStream());
+                        }
                     }
                 }
                 catch (IOException e) {
+                    error_msg = "Failed to reach internet";
                     Log.w("Failed API Call", e);
                 }
 
                 post(new Runnable() {
                     @Override
                     public void run() {
+                        if (error_msg != null) {
+                            Toast.makeText(getContext(), error_msg, Toast.LENGTH_SHORT).show();
+                        }
                         invalidate();
                     }
                 });

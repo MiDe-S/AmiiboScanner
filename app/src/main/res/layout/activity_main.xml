@@ -7,25 +7,52 @@
     tools:context=".ScannerActivity">
 
     <TextView
-        android:id="@+id/test"
+        android:id="@+id/screenTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Amiibo Scanner" />
-
-    <Button
-        android:id="@+id/load_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:onClick="onLoadClick"
-        android:text="@string/load_button" />
+        android:paddingTop="20dp"
+        android:paddingBottom="20dp"
+        android:text="@string/app_name"
+        android:textSize="30sp" />
 
     <view
         android:id="@+id/scannerView"
         class="edu.msu.masiakde.amiiboscanner.ScannerView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:visibility="invisible" />
+        android:layout_above="@id/load_tag_button"
+        android:layout_below="@id/screenTitle" />
+
+    <Button
+        android:id="@+id/load_tag_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/load_file_button"
+        android:onClick="onLoadClick"
+        android:text="@string/load_tag_button" />
+
+    <Button
+        android:id="@+id/restore_tag_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@id/load_tag_button"
+        android:layout_toEndOf="@id/load_tag_button"
+        android:text="@string/restore_tag_button" />
+
+    <Button
+        android:id="@+id/load_file_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:text="@string/load_file_button" />
+
+    <Button
+        android:id="@+id/save_file_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@id/load_file_button"
+        android:layout_toEndOf="@id/load_file_button"
+        android:text="@string/save_file_button" />
 
 </RelativeLayout>

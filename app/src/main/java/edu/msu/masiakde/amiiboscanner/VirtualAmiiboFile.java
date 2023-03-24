@@ -33,7 +33,6 @@ public class VirtualAmiiboFile {
             System.arraycopy(out, 0, bin, i * BYTES_READ, BYTES_READ - PAGE_SIZE);
 
             Log.i("tag-data", bytesToHexString(bin, true));
-            int tesst = 0;
         }
         catch (IOException e) {
             Log.i("tag-error", e.toString());
