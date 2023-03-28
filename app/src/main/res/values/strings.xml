@@ -4,4 +4,6 @@
     <string name="save_file_button">Save File</string>
     <string name="load_file_button">Load File</string>
     <string name="restore_tag_button">Restore Tag</string>
+    <string name="placeholder_char_name">Character</string>
+    <string name="placeholder_series_name">Series</string>
 </resources>

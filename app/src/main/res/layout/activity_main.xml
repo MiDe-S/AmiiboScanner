@@ -21,38 +21,117 @@
         class="edu.msu.masiakde.amiiboscanner.ScannerView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@id/load_tag_button"
-        android:layout_below="@id/screenTitle" />
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/screenTitle"
+        android:layout_above="@+id/charNameView" />
 
-    <Button
-        android:id="@+id/load_tag_button"
+    <TextView
+        android:id="@+id/charNameView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@id/load_file_button"
-        android:onClick="onLoadClick"
-        android:text="@string/load_tag_button" />
+        android:layout_centerHorizontal="true"
+        android:text="@string/placeholder_char_name"
+        android:layout_above="@+id/seriesNameView"
+        android:textSize="25sp" />
 
-    <Button
-        android:id="@+id/restore_tag_button"
+    <TextView
+        android:id="@+id/seriesNameView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignTop="@id/load_tag_button"
-        android:layout_toEndOf="@id/load_tag_button"
-        android:text="@string/restore_tag_button" />
+        android:layout_above="@+id/buttonSplitter"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="50dp"
+        android:text="@string/placeholder_series_name"
+        android:textSize="20sp" />
 
-    <Button
-        android:id="@+id/load_file_button"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:orientation="vertical"
+        android:id="@+id/buttonSplitter"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:text="@string/load_file_button" />
+        android:layout_alignParentBottom="true">
 
-    <Button
-        android:id="@+id/save_file_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignTop="@id/load_file_button"
-        android:layout_toEndOf="@id/load_file_button"
-        android:text="@string/save_file_button" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="1" >
+            </Space>
+
+            <Button
+                android:id="@+id/load_tag_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="onLoadClick"
+                android:paddingLeft="30dp"
+                android:paddingRight="30dp"
+                android:text="@string/load_tag_button" />
+
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="1"></Space>
+
+            <Button
+                android:id="@+id/restore_tag_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/restore_tag_button" />
+
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="1" >
+            </Space>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="1" >
+            </Space>
+
+            <Button
+                android:id="@+id/load_file_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="30dp"
+                android:paddingRight="30dp"
+                android:text="@string/load_file_button"/>
+
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="1" >
+            </Space>
+
+            <Button
+                android:id="@+id/save_file_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="30dp"
+                android:paddingRight="30dp"
+                android:text="@string/save_file_button" />
+
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="1" >
+            </Space>
+
+        </LinearLayout>
+    </LinearLayout>
+
+
 
 </RelativeLayout>

@@ -2,6 +2,7 @@ package edu.msu.masiakde.amiiboscanner;
 
 import static edu.msu.masiakde.amiiboscanner.Utils.bytesToHexString;
 
+import android.content.Intent;
 import android.nfc.Tag;
 import android.nfc.tech.MifareUltralight;
 import android.util.Log;

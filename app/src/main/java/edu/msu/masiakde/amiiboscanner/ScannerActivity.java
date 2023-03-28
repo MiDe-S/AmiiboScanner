@@ -2,10 +2,12 @@ package edu.msu.masiakde.amiiboscanner;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.nfc.NfcAdapter;
 import android.nfc.Tag;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class ScannerActivity extends AppCompatActivity {
@@ -65,5 +67,15 @@ public class ScannerActivity extends AppCompatActivity {
 
     public void onLoadClick(View view) {
         nfcAdapter.enableReaderMode(this, mCallback, NfcAdapter.FLAG_READER_NFC_A | NfcAdapter.FLAG_READER_SKIP_NDEF_CHECK, null);
+    }
+
+    public void setNameView(String name) {
+        TextView tv = (TextView)findViewById(R.id.charNameView);
+        tv.setText(name);
+    }
+
+    public void setSeriesView(String series) {
+        TextView tv = (TextView)findViewById(R.id.seriesNameView);
+        tv.setText(series);
     }
 }

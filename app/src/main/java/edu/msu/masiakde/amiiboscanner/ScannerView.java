@@ -9,6 +9,7 @@ import android.graphics.Canvas;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.ByteArrayOutputStream;
@@ -49,12 +50,15 @@ public class ScannerView extends View {
     }
 
     private void init(AttributeSet attrs, int defStyle) {
+        amiiboBitmap = BitmapFactory.decodeResource(getContext().getResources(), R.drawable.unknown);
     }
 
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
+
+
 
         // If there is no image to draw, we do nothing
         if(amiiboBitmap == null) {
@@ -93,6 +97,8 @@ public class ScannerView extends View {
         canvas.scale(imageScale, imageScale);
         canvas.drawBitmap(amiiboBitmap, 0, 0, null);
         canvas.restore();
+
+        invalidate();
     }
 
     public void setAmiibo(VirtualAmiiboFile amiiboFile) {
@@ -145,6 +151,9 @@ public class ScannerView extends View {
                         if (error_msg != null) {
                             Toast.makeText(getContext(), error_msg, Toast.LENGTH_SHORT).show();
                         }
+                        ScannerActivity activity = (ScannerActivity)getContext();
+                        activity.setNameView(amiiboInfo.getName());
+                        activity.setSeriesView(amiiboInfo.getSeries());
                         invalidate();
                     }
                 });

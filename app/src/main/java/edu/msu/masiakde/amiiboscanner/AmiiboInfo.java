@@ -28,4 +28,6 @@ public final class AmiiboInfo {
     }
 
     public String getImageURL() { return amiibo[0].image; }
+
+    public String getSeries() { return amiibo[0].gameSeries; }
 }
