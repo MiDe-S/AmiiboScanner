@@ -1,14 +1,29 @@
 package edu.msu.masiakde.amiiboscanner;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
+import android.content.ContentResolver;
 import android.content.Intent;
+import android.net.Uri;
 import android.nfc.NfcAdapter;
 import android.nfc.Tag;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
 
 public class ScannerActivity extends AppCompatActivity {
 
@@ -41,6 +56,34 @@ public class ScannerActivity extends AppCompatActivity {
         }
     }
 
+    ActivityResultLauncher<Intent> pickBinResultLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult result) {
+                    if (result.getResultCode() == Activity.RESULT_OK) {
+                        // There are no request codes
+                        Intent data = result.getData();
+                        Uri binUri = data.getData();
+                        try {
+                            // Open a file input stream for the URI using the content resolver
+                            ContentResolver contentResolver = getApplicationContext().getContentResolver();
+                            InputStream inputStream = contentResolver.openInputStream(binUri);
+                            // Create a byte array to hold the file data
+                            byte[] binData = new byte[inputStream.available()];
+
+                            inputStream.read(binData);
+                            inputStream.close();
+
+                            getScannerView().setAmiibo(new VirtualAmiiboFile(binData));
+                        }
+                        catch (IOException e) {
+                            Log.w("IO Error", e);
+                        }
+                    }
+                }
+            });
+
     /**
      * The scanner view object
      */
@@ -67,6 +110,19 @@ public class ScannerActivity extends AppCompatActivity {
 
     public void onLoadClick(View view) {
         nfcAdapter.enableReaderMode(this, mCallback, NfcAdapter.FLAG_READER_NFC_A | NfcAdapter.FLAG_READER_SKIP_NDEF_CHECK, null);
+    }
+
+    public void onLoadFileClick(View view) {
+        Intent intent = new Intent(Intent.ACTION_PICK);
+        intent.setType("application/octet-stream");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+
+        pickBinResultLauncher.launch(intent);
+    }
+
+    public void onSaveFileClick(View view) {
+        SaveDlg dlg = new SaveDlg();
+        dlg.show(getSupportFragmentManager(), "save");
     }
 
     public void setNameView(String name) {

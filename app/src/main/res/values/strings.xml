@@ -6,4 +6,6 @@
     <string name="restore_tag_button">Restore Tag</string>
     <string name="placeholder_char_name">Character</string>
     <string name="placeholder_series_name">Series</string>
+    <string name="file_name">File name</string>
+    <string name="save_dlg">Save File</string>
 </resources>

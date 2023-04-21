@@ -2,10 +2,13 @@ package edu.msu.masiakde.amiiboscanner;
 
 import static edu.msu.masiakde.amiiboscanner.Utils.bytesToHexString;
 
+import android.content.ContentResolver;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.net.Uri;
+import android.os.Environment;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
@@ -13,8 +16,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.net.URL;
 
 import retrofit2.Response;
@@ -161,6 +168,27 @@ public class ScannerView extends View {
         });
         thread.start();
 
+    }
+
+    public void saveAmiiboFile(String name) {
+
+        String filename = name + ".bin";
+
+        String path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).toString();
+
+        // Create a file object from the path and filename
+        File file = new File(path, filename);
+
+        try {
+            FileOutputStream fos = new FileOutputStream(file);
+            fos.write(amiibo.getBytes());
+            fos.close();
+            Toast.makeText(getContext(), "File Saved!", Toast.LENGTH_SHORT).show();
+
+        } catch (IOException e) {
+            Log.w("Save-Error-IO", e);
+            Toast.makeText(getContext(), "Save Error", Toast.LENGTH_SHORT).show();
+        }
     }
 
     public String streamToString(InputStream inputStream) {

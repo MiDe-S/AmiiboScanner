@@ -3,10 +3,14 @@ package edu.msu.masiakde.amiiboscanner;
 import static edu.msu.masiakde.amiiboscanner.Utils.bytesToHexString;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.nfc.Tag;
 import android.nfc.tech.MifareUltralight;
 import android.util.Log;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Arrays;
 
@@ -40,15 +44,20 @@ public class VirtualAmiiboFile {
         }
     }
 
+    public VirtualAmiiboFile(byte[] binData) {
+        Log.i("tag-found", "File opened");
+        bin = binData;
+    }
+
     public byte[] getCharID() {
         byte[] char_id = Arrays.copyOfRange(bin, 21*4, 21*4+8);
-        Log.w("Tag-char-id", bytesToHexString(char_id, true));
+        Log.w("tag-char-id", bytesToHexString(char_id, true));
        return char_id;
     }
 
     public byte[] getHead() {
         byte[] char_id = Arrays.copyOfRange(bin, 21*4, 21*4+4);
-        Log.w("Tag-head", bytesToHexString(char_id, true));
+        Log.w("tag-head", bytesToHexString(char_id, true));
         return char_id;
     }
     public byte[] getTail() {
@@ -63,5 +72,9 @@ public class VirtualAmiiboFile {
         System.arraycopy(bin, 4, uuid, 3, 4);
         Log.w("Tag-uuid", bytesToHexString(uuid, true));
         return uuid;
+    }
+
+    public byte[] getBytes() {
+        return bin;
     }
 }

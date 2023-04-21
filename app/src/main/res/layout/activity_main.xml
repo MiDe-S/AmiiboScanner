@@ -105,9 +105,10 @@
                 android:id="@+id/load_file_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:onClick="onLoadFileClick"
                 android:paddingLeft="30dp"
                 android:paddingRight="30dp"
-                android:text="@string/load_file_button"/>
+                android:text="@string/load_file_button" />
 
             <Space
                 android:layout_width="0dp"
@@ -119,6 +120,7 @@
                 android:id="@+id/save_file_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:onClick="onSaveFileClick"
                 android:paddingLeft="30dp"
                 android:paddingRight="30dp"
                 android:text="@string/save_file_button" />
