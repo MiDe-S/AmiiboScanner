@@ -8,12 +8,15 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.net.Uri;
+import android.os.Bundle;
 import android.os.Environment;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -40,6 +43,8 @@ public class ScannerView extends View {
     private Bitmap amiiboBitmap = null;
 
     private final static float SCALE_DOWN = (float)0.7;
+
+    private final static String AMIIBO_KEY = "amiibo-key";
 
     public ScannerView(Context context) {
         super(context);
@@ -188,6 +193,19 @@ public class ScannerView extends View {
         } catch (IOException e) {
             Log.w("Save-Error-IO", e);
             Toast.makeText(getContext(), "Save Error", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    protected void saveInstanceState(@NonNull Bundle bundle) {
+        if (amiibo != null) {
+            bundle.putByteArray(AMIIBO_KEY, amiibo.getBytes());
+        }
+    }
+
+    public void getFromBundle(Bundle bundle) {
+        byte[] output = bundle.getByteArray(AMIIBO_KEY);
+        if (output != null) {
+            setAmiibo(new VirtualAmiiboFile(output));
         }
     }
 

@@ -4,6 +4,7 @@ import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
@@ -13,10 +14,14 @@ import android.net.Uri;
 import android.nfc.NfcAdapter;
 import android.nfc.Tag;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.android.material.snackbar.Snackbar;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -33,6 +38,7 @@ public class ScannerActivity extends AppCompatActivity {
         public void onTagDiscovered (Tag tag) {
             runToastOnUIThread("Scanning Tag");
             getScannerView().setAmiibo(new VirtualAmiiboFile(tag));
+            getSaveButton().setEnabled(true);
             stopReader();
             runToastOnUIThread("Tag Found");
         }
@@ -50,10 +56,33 @@ public class ScannerActivity extends AppCompatActivity {
         nfcAdapter = NfcAdapter.getDefaultAdapter(this);
         //If no NfcAdapter, display that the device has no NFC
         if (nfcAdapter == null){
-            Toast.makeText(this,"NO NFC Capabilities",
-                    Toast.LENGTH_SHORT).show();
+            Toast.makeText(this,"No NFC Capabilities",
+                    Toast.LENGTH_LONG).show();
             finish();
         }
+        else if (!nfcAdapter.isEnabled()) {
+            Snackbar.make(getScannerView(), "NFC is disabled", Snackbar.LENGTH_INDEFINITE)
+                    .setAction("ENABLE", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            // Open NFC settings to enable it
+                            Intent intent = new Intent(Settings.ACTION_NFC_SETTINGS);
+                            startActivity(intent);
+                        }
+                    })
+                    .show();
+        }
+
+        if (savedInstanceState != null) {
+            getScannerView().getFromBundle(savedInstanceState);
+        }
+    }
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        getScannerView().saveInstanceState(outState);
     }
 
     ActivityResultLauncher<Intent> pickBinResultLauncher = registerForActivityResult(
@@ -76,6 +105,7 @@ public class ScannerActivity extends AppCompatActivity {
                             inputStream.close();
 
                             getScannerView().setAmiibo(new VirtualAmiiboFile(binData));
+                            getSaveButton().setEnabled(true);
                         }
                         catch (IOException e) {
                             Log.w("IO Error", e);
@@ -89,6 +119,10 @@ public class ScannerActivity extends AppCompatActivity {
      */
     private ScannerView getScannerView() {
         return findViewById(R.id.scannerView);
+    }
+
+    private Button getSaveButton() {
+        return findViewById(R.id.save_file_button);
     }
 
     private void runToastOnUIThread(String message) {

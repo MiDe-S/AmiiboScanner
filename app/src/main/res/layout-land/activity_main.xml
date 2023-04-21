@@ -1,55 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:baselineAligned="false"
+    android:orientation="horizontal"
     tools:context=".ScannerActivity">
 
-    <TextView
-        android:id="@+id/screenTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:paddingTop="20dp"
-        android:paddingBottom="20dp"
-        android:text="@string/app_name"
-        android:textSize="30sp" />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1">
 
-    <view
-        android:id="@+id/scannerView"
-        class="edu.msu.masiakde.amiiboscanner.ScannerView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@id/screenTitle"
-        android:layout_above="@+id/charNameView" />
+        <TextView
+            android:id="@+id/screenTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerInParent="true"
+            android:paddingTop="20dp"
+            android:paddingBottom="20dp"
+            android:text="@string/app_name"
+            android:textSize="30sp" />
 
-    <TextView
-        android:id="@+id/charNameView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:text="@string/placeholder_char_name"
-        android:layout_above="@+id/seriesNameView"
-        android:textSize="25sp" />
+        <view
+            android:id="@+id/scannerView"
+            class="edu.msu.masiakde.amiiboscanner.ScannerView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@id/charNameView"
+            android:layout_below="@id/screenTitle" />
 
-    <TextView
-        android:id="@+id/seriesNameView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/buttonSplitter"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="50dp"
-        android:text="@string/placeholder_series_name"
-        android:textSize="20sp" />
+        <TextView
+            android:id="@+id/charNameView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@id/seriesNameView"
+            android:layout_centerInParent="true"
+            android:text="@string/placeholder_char_name"
+            android:textSize="25sp" />
+
+        <TextView
+            android:id="@+id/seriesNameView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerInParent="true"
+            android:layout_marginBottom="20dp"
+            android:text="@string/placeholder_series_name"
+            android:textSize="20sp" />
+    </RelativeLayout>
 
     <LinearLayout
-        android:orientation="vertical"
         android:id="@+id/buttonSplitter"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true">
+        android:layout_gravity="center_vertical"
+        android:layout_weight="1"
+        android:orientation="vertical">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -59,8 +68,7 @@
             <Space
                 android:layout_width="0dp"
                 android:layout_height="1dp"
-                android:layout_weight="1" >
-            </Space>
+                android:layout_weight="1"></Space>
 
             <Button
                 android:id="@+id/load_tag_button"
@@ -86,8 +94,7 @@
             <Space
                 android:layout_width="0dp"
                 android:layout_height="1dp"
-                android:layout_weight="1" >
-            </Space>
+                android:layout_weight="1"></Space>
 
         </LinearLayout>
 
@@ -99,8 +106,7 @@
             <Space
                 android:layout_width="0dp"
                 android:layout_height="1dp"
-                android:layout_weight="1" >
-            </Space>
+                android:layout_weight="1"></Space>
 
             <Button
                 android:id="@+id/load_file_button"
@@ -114,8 +120,7 @@
             <Space
                 android:layout_width="0dp"
                 android:layout_height="1dp"
-                android:layout_weight="1" >
-            </Space>
+                android:layout_weight="1"></Space>
 
             <Button
                 android:id="@+id/save_file_button"
@@ -130,12 +135,10 @@
             <Space
                 android:layout_width="0dp"
                 android:layout_height="1dp"
-                android:layout_weight="1" >
-            </Space>
+                android:layout_weight="1"></Space>
 
         </LinearLayout>
     </LinearLayout>
 
 
-
-</RelativeLayout>
+</LinearLayout>
