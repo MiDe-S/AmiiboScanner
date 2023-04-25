@@ -32,6 +32,8 @@ import java.nio.file.Files;
 
 public class ScannerActivity extends AppCompatActivity {
 
+    private boolean scanning = false;
+
 
     public class callBackHandler implements NfcAdapter.ReaderCallback {
         @Override
@@ -39,8 +41,10 @@ public class ScannerActivity extends AppCompatActivity {
             runToastOnUIThread("Scanning Tag");
             getScannerView().setAmiibo(new VirtualAmiiboFile(tag));
             getSaveButton().setEnabled(true);
+            runOnUiThread(() -> getScannerView().invalidate());
             stopReader();
             runToastOnUIThread("Tag Found");
+            scanning = false;
         }
     }
 
@@ -75,6 +79,7 @@ public class ScannerActivity extends AppCompatActivity {
 
         if (savedInstanceState != null) {
             getScannerView().getFromBundle(savedInstanceState);
+            getSaveButton().setEnabled(true);
         }
     }
 
@@ -138,11 +143,21 @@ public class ScannerActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        //On pause stop listening
+        if (nfcAdapter != null && scanning) {
+            nfcAdapter.disableReaderMode(this);
+        }
+    }
+
     private void stopReader() {
         nfcAdapter.disableReaderMode(this);
     }
 
     public void onLoadClick(View view) {
+        scanning = true;
         nfcAdapter.enableReaderMode(this, mCallback, NfcAdapter.FLAG_READER_NFC_A | NfcAdapter.FLAG_READER_SKIP_NDEF_CHECK, null);
     }
 

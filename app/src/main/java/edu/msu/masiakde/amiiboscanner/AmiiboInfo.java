@@ -1,9 +1,11 @@
 package edu.msu.masiakde.amiiboscanner;
 
 
-public final class AmiiboInfo {
-    public class Amiibo {
-        public class Release {
+import java.io.Serializable;
+
+public final class AmiiboInfo implements Serializable {
+    public class Amiibo implements Serializable  {
+        public class Release implements Serializable  {
             public String au;
             public String eu;
             public String jp;

@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.net.MalformedURLException;
 import java.net.URL;
 
 import retrofit2.Response;
@@ -45,6 +46,10 @@ public class ScannerView extends View {
     private final static float SCALE_DOWN = (float)0.7;
 
     private final static String AMIIBO_KEY = "amiibo-key";
+    private final static String IMAGE_KEY = "image-key";
+    private final static String NAME_KEY = "name-key";
+    private final static String SERIES_KEY = "series-key";
+
 
     public ScannerView(Context context) {
         super(context);
@@ -163,10 +168,7 @@ public class ScannerView extends View {
                         if (error_msg != null) {
                             Toast.makeText(getContext(), error_msg, Toast.LENGTH_SHORT).show();
                         }
-                        ScannerActivity activity = (ScannerActivity)getContext();
-                        activity.setNameView(amiiboInfo.getName());
-                        activity.setSeriesView(amiiboInfo.getSeries());
-                        invalidate();
+                        setNames();
                     }
                 });
             }
@@ -199,14 +201,42 @@ public class ScannerView extends View {
     protected void saveInstanceState(@NonNull Bundle bundle) {
         if (amiibo != null) {
             bundle.putByteArray(AMIIBO_KEY, amiibo.getBytes());
+            bundle.putSerializable(NAME_KEY, amiiboInfo);
         }
     }
 
     public void getFromBundle(Bundle bundle) {
         byte[] output = bundle.getByteArray(AMIIBO_KEY);
         if (output != null) {
-            setAmiibo(new VirtualAmiiboFile(output));
+            amiibo = new VirtualAmiiboFile(output);
+            amiiboInfo = (AmiiboInfo)bundle.getSerializable(NAME_KEY);
+            setImage(amiiboInfo.getImageURL());
+            setNames();
         }
+    }
+
+    private void setNames() {
+        ScannerActivity activity = (ScannerActivity)getContext();
+        activity.setNameView(amiiboInfo.getName());
+        activity.setSeriesView(amiiboInfo.getSeries());
+        invalidate();
+    }
+
+    private void setImage(String img_url) {
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run()  {
+        try {
+            URL url = new URL(img_url);
+            amiiboBitmap = BitmapFactory.decodeStream(url.openConnection().getInputStream());
+        }
+        catch (MalformedURLException e) {
+            Log.w("Image Failure", e);
+        }
+        catch (IOException e) {
+            Log.w("Image Failure", e);
+        }}});
+        thread.start();
     }
 
     public String streamToString(InputStream inputStream) {
